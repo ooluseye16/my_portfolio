@@ -17,6 +17,17 @@ A personal portfolio website built with Flutter Web to showcase my projects and 
 - URL Launcher
 - Flutter SVG
 
-## Getting Started
+## Screenshots
 
-1. Clone the repository# my_portfolio
+### Desktop View
+
+![Desktop View](assets/screenshots/screnshot_desktop.png)
+
+### Tablet View
+
+![Tablet View](assets/screenshots/screenshot_tab.png)
+
+### Mobile View
+
+![Mobile View](assets/screenshots/screenshot_mobile.png)
+
