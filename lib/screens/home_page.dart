@@ -1,16 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:my_portfolio/components/extensions.dart';
+import 'package:my_portfolio/providers/theme_provider.dart';
 import 'package:url_launcher/link.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDarkMode ? Colors.black : Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: AnimatedRotation(
+              duration: const Duration(milliseconds: 300),
+              turns: isDarkMode ? 0.5 : 0,
+              child: AnimatedScale(
+                duration: const Duration(milliseconds: 300),
+                scale: 1.0,
+                child: IconButton(
+                  icon: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    transitionBuilder:
+                        (Widget child, Animation<double> animation) {
+                      return RotationTransition(
+                        turns: animation,
+                        child: ScaleTransition(
+                          scale: animation,
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: Icon(
+                      isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                      key: ValueKey<bool>(isDarkMode),
+                      color: Theme.of(context).iconTheme.color,
+                    ),
+                  ),
+                  onPressed: () {
+                    ref.read(themeProvider.notifier).toggleTheme();
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           // Define breakpoints
@@ -142,7 +187,7 @@ class HomePage extends StatelessWidget {
                               flex: 1,
                               child: Center(
                                   child: _buildDescriptionSection(
-                                      isDesktop, isTablet)),
+                                      isDesktop, isTablet, context)),
                             ),
                             64.width,
                             // Right side - Projects
@@ -152,9 +197,11 @@ class HomePage extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     80.height,
-                                    _buildProjectsSection(isDesktop, isTablet),
+                                    _buildProjectsSection(
+                                        isDesktop, isTablet, context),
                                     120.height,
-                                    _buildArticlesSection(isDesktop, isTablet),
+                                    _buildArticlesSection(
+                                        isDesktop, isTablet, context),
                                   ],
                                 ),
                               ),
@@ -165,11 +212,14 @@ class HomePage extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _buildDescriptionSection(isDesktop, isTablet),
+                              _buildDescriptionSection(
+                                  isDesktop, isTablet, context),
                               120.height,
-                              _buildProjectsSection(isDesktop, isTablet),
+                              _buildProjectsSection(
+                                  isDesktop, isTablet, context),
                               120.height,
-                              _buildArticlesSection(isDesktop, isTablet),
+                              _buildArticlesSection(
+                                  isDesktop, isTablet, context),
                             ],
                           ),
                         ),
@@ -182,7 +232,8 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildDescriptionSection(bool isDesktop, bool isTablet) {
+  Widget _buildDescriptionSection(
+      bool isDesktop, bool isTablet, BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -196,7 +247,7 @@ class HomePage extends StatelessWidget {
                     ? 40
                     : 32,
             fontWeight: FontWeight.w700,
-            color: Colors.black,
+            color: Theme.of(context).textTheme.bodyLarge?.color,
           ),
         ),
         Text(
@@ -208,7 +259,7 @@ class HomePage extends StatelessWidget {
                     ? 40
                     : 32,
             fontWeight: FontWeight.w700,
-            color: Colors.black,
+            color: Theme.of(context).textTheme.bodyLarge?.color,
           ),
         ),
         8.height,
@@ -221,7 +272,7 @@ class HomePage extends StatelessWidget {
                     ? 14
                     : 12,
             fontWeight: FontWeight.w400,
-            color: Colors.black54,
+            color: Theme.of(context).textTheme.bodyMedium?.color,
           ),
         ),
         64.height,
@@ -230,7 +281,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProjectsSection(bool isDesktop, bool isTablet) {
+  Widget _buildProjectsSection(bool isDesktop, bool isTablet, BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -243,7 +294,7 @@ class HomePage extends StatelessWidget {
                     ? 24
                     : 20,
             fontWeight: FontWeight.w500,
-            color: Colors.black,
+            color: Theme.of(context).textTheme.bodyLarge?.color,
           ),
         ),
         16.height,
@@ -302,87 +353,56 @@ class HomePage extends StatelessWidget {
     return Wrap(
       runSpacing: 8,
       children: [
-        Link(
-          uri: Uri.parse('https://twitter.com/oluseye_obitola'),
-          builder: (context, followLink) => InkWell(
-            onTap: () {
-              launchUrl(Uri.parse('https://twitter.com/oluseye_obitola'));
-            },
-            child: Text(
-              "Twitter",
-              style: TextStyle(
-                fontSize: isDesktop ? 18 : 14,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
-                decoration: TextDecoration.underline,
-                height: 1,
-              ),
-            ),
-          ),
+        _buildSocialLink(
+          'Twitter',
+          'https://twitter.com/oluseye_obitola',
+          isDesktop,
         ),
         32.width,
-        Link(
-          uri: Uri.parse('https://github.com/ooluseye16'),
-          builder: (context, followLink) => InkWell(
-            onTap: () {
-              launchUrl(Uri.parse('https://github.com/ooluseye16'));
-            },
-            child: Text(
-              "Github",
-              style: TextStyle(
-                fontSize: isDesktop ? 18 : 14,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
-                decoration: TextDecoration.underline,
-                height: 1,
-              ),
-            ),
-          ),
+        _buildSocialLink(
+          'Github',
+          'https://github.com/ooluseye16',
+          isDesktop,
         ),
         32.width,
-        Link(
-          uri: Uri.parse('https://www.linkedin.com/in/oluseye-obitola/'),
-          builder: (context, followLink) => InkWell(
-            onTap: () {
-              launchUrl(
-                  Uri.parse('https://www.linkedin.com/in/oluseye-obitola/'));
-            },
-            child: Text(
-              "LinkedIn",
-              style: TextStyle(
-                fontSize: isDesktop ? 18 : 14,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
-                decoration: TextDecoration.underline,
-                height: 1,
-              ),
-            ),
-          ),
+        _buildSocialLink(
+          'LinkedIn',
+          'https://www.linkedin.com/in/oluseye-obitola/',
+          isDesktop,
         ),
         32.width,
-        Link(
-          uri: Uri.parse('mailto:oluseyeobitola01@gmail.com'),
-          builder: (context, followLink) => InkWell(
-            onTap: () {
-              launchUrl(Uri.parse('mailto:oluseyeobitola01@gmail.com'));
-            },
-            child: Text(
-              "Email",
-              style: TextStyle(
-                fontSize: isDesktop ? 18 : 14,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
-                decoration: TextDecoration.underline,
-                height: 1,
-              ),
-            ),
-          ),
+        _buildSocialLink(
+          'Email',
+          'mailto:oluseyeobitola01@gmail.com',
+          isDesktop,
         ),
       ],
     );
   }
 
-  Widget _buildArticlesSection(bool isDesktop, bool isTablet) {
+  Widget _buildSocialLink(String text, String url, bool isDesktop) {
+    return Link(
+      uri: Uri.parse(url),
+      builder: (context, followLink) => InkWell(
+        onTap: () {
+          launchUrl(Uri.parse(url));
+        },
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: isDesktop ? 18 : 14,
+            fontWeight: FontWeight.w500,
+            color: Theme.of(context).textTheme.bodyLarge?.color,
+            decoration: TextDecoration.underline,
+            height: 1,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildArticlesSection(
+      bool isDesktop, bool isTablet, BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -395,7 +415,7 @@ class HomePage extends StatelessWidget {
                     ? 24
                     : 20,
             fontWeight: FontWeight.w500,
-            color: Colors.black,
+            color: Theme.of(context).textTheme.bodyLarge?.color,
           ),
         ),
         16.height,
@@ -480,7 +500,8 @@ class _ProjectCardState extends State<ProjectCard> {
         ),
         decoration: BoxDecoration(
           border: Border.all(
-              color: Colors.black, width: widget.isDesktop ? 1 : 0.5),
+              color: Theme.of(context).dividerColor,
+              width: widget.isDesktop ? 1 : 0.5),
           borderRadius: BorderRadius.circular(4),
         ),
         width: MediaQuery.of(context).size.width *
@@ -502,7 +523,7 @@ class _ProjectCardState extends State<ProjectCard> {
                         ? 28
                         : 24,
                 fontWeight: FontWeight.w700,
-                color: Colors.black,
+                color: Theme.of(context).textTheme.bodyLarge?.color,
               ),
             ),
             widget.isDesktop ? 16.height : 8.height,
@@ -511,7 +532,7 @@ class _ProjectCardState extends State<ProjectCard> {
               style: TextStyle(
                 fontSize: widget.isDesktop ? 16 : 14,
                 fontWeight: FontWeight.w400,
-                color: Colors.black54,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
             ),
             const Spacer(),
@@ -520,10 +541,14 @@ class _ProjectCardState extends State<ProjectCard> {
               builder: (context, followLink) => InkWell(
                 onTap: () {
                   launchUrl(Uri.parse(widget.projectLink));
-              },
-              child: SvgPicture.asset(
-                'github'.toSvg,
-                height: widget.isDesktop ? 32 : 24,
+                },
+                child: SvgPicture.asset(
+                  'github'.toSvg,
+                  height: widget.isDesktop ? 32 : 24,
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).iconTheme.color!,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),
@@ -579,7 +604,9 @@ class _ArticleCardState extends State<ArticleCard> {
             transform: Matrix4.identity()..scale(isHovered ? 1.02 : 1.0),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.black, width: 1),
+              border: Border.all(
+                  color: Theme.of(context).dividerColor,
+                  width: widget.isDesktop ? 1 : 0.5),
               borderRadius: BorderRadius.circular(4),
             ),
             width: MediaQuery.of(context).size.width *
@@ -592,14 +619,19 @@ class _ArticleCardState extends State<ArticleCard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(widget.articleDate),
+                Text(
+                  widget.articleDate,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
+                  ),
+                ),
                 const Spacer(),
                 Text(
                   widget.articleTitle,
                   style: TextStyle(
                     fontSize: widget.isDesktop ? 24 : 20,
                     fontWeight: FontWeight.w700,
-                    color: Colors.black,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
                   ),
                 ),
                 8.height,
@@ -608,8 +640,7 @@ class _ArticleCardState extends State<ArticleCard> {
                   style: TextStyle(
                     fontSize: widget.isDesktop ? 16 : 14,
                     fontWeight: FontWeight.w400,
-                    color: Colors.black54,
-                    overflow: TextOverflow.ellipsis,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
                   maxLines: 2,
                 ),

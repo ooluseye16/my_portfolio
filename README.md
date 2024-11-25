@@ -9,6 +9,8 @@ A personal portfolio website built with Flutter Web to showcase my projects and 
 - Articles section featuring my technical blog posts
 - Social media links and contact information
 - Clean, minimalist design with smooth animations
+- Dark mode support with theme toggle
+
 
 ## Technologies Used
 
