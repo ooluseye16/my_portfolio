@@ -281,7 +281,8 @@ class HomePage extends ConsumerWidget {
     );
   }
 
-  Widget _buildProjectsSection(bool isDesktop, bool isTablet, BuildContext context) {
+  Widget _buildProjectsSection(
+      bool isDesktop, bool isTablet, BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -310,14 +311,14 @@ class HomePage extends ConsumerWidget {
             runSpacing: 32,
             alignment: WrapAlignment.spaceBetween,
             children: [
-              ProjectCard(
-                isDesktop: isDesktop,
-                isTablet: isTablet,
-                projectName: 'Lorelink',
-                projectDescription:
-                    'A social media mobile app where users can create a story with each other. ',
-                projectLink: 'https://github.com/ooluseye16/lorelink',
-              ),
+              // ProjectCard(
+              //   isDesktop: isDesktop,
+              //   isTablet: isTablet,
+              //   projectName: 'Lorelink',
+              //   projectDescription:
+              //       'A social media mobile app where users can create a story with each other. ',
+              //   projectLink: 'https://github.com/ooluseye16/lorelink',
+              // ),
               ProjectCard(
                 isDesktop: isDesktop,
                 isTablet: isTablet,
@@ -331,17 +332,20 @@ class HomePage extends ConsumerWidget {
                 isTablet: isTablet,
                 projectName: 'Invoice Generator',
                 projectDescription:
-                    'A flutter app that generates invoices for a business. User enters the details of the product and the app generates an invoice in PDF format.',
+                    'A flutter app that generates invoices for any organization created. Organizations are stored locally using Hive. Invoice generated in PDF format ',
                 projectLink: 'https://github.com/ooluseye16/invoice_generator',
+                appLink:
+                    'https://drive.google.com/open?id=1-jLqI60KsSro30g_Dr64QXYN0hS7yDfi&usp=drive_fs',
               ),
               ProjectCard(
-                isDesktop: isDesktop,
-                isTablet: isTablet,
-                projectName: 'Point Tracker',
-                projectDescription:
-                    'A leaderboard mobile app where users can track their points. Uses Sqflite to store the data.',
-                projectLink: 'https://github.com/ooluseye16/point_tracker',
-              ),
+                  isDesktop: isDesktop,
+                  isTablet: isTablet,
+                  projectName: 'Point Tracker',
+                  projectDescription:
+                      'A leaderboard mobile app where users can track their points. Uses Sqflite to store the data locally.',
+                  projectLink: 'https://github.com/ooluseye16/point_tracker',
+                  appLink:
+                      "https://drive.google.com/open?id=1-ZYFQgQ2DIFZLMeLOIn2CR79ltapxgze&usp=drive_fs"),
             ],
           ),
         ),
@@ -467,6 +471,7 @@ class ProjectCard extends StatefulWidget {
     required this.projectName,
     required this.projectDescription,
     required this.projectLink,
+    this.appLink,
   });
 
   final bool isDesktop;
@@ -474,7 +479,7 @@ class ProjectCard extends StatefulWidget {
   final String projectName;
   final String projectDescription;
   final String projectLink;
-
+  final String? appLink;
   @override
   State<ProjectCard> createState() => _ProjectCardState();
 }
@@ -536,21 +541,45 @@ class _ProjectCardState extends State<ProjectCard> {
               ),
             ),
             const Spacer(),
-            Link(
-              uri: Uri.parse(widget.projectLink),
-              builder: (context, followLink) => InkWell(
-                onTap: () {
-                  launchUrl(Uri.parse(widget.projectLink));
-                },
-                child: SvgPicture.asset(
-                  'github'.toSvg,
-                  height: widget.isDesktop ? 32 : 24,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).iconTheme.color!,
-                    BlendMode.srcIn,
+            Row(
+              children: [
+                Link(
+                  uri: Uri.parse(widget.projectLink),
+                  builder: (context, followLink) => InkWell(
+                    onTap: () {
+                      launchUrl(Uri.parse(widget.projectLink));
+                    },
+                    child: SvgPicture.asset(
+                      'github'.toSvg,
+                      height: widget.isDesktop ? 32 : 24,
+                      colorFilter: ColorFilter.mode(
+                        Theme.of(context).iconTheme.color!,
+                        BlendMode.srcIn,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                16.width,
+                if (widget.appLink != null)
+                  Link(
+                    uri: Uri.parse(widget.appLink!),
+                    builder: (context, followLink) => InkWell(
+                      onTap: () {
+                        launchUrl(Uri.parse(widget.appLink!));
+                      },
+                      child: Text(
+                        'App Link',
+                        style: TextStyle(
+                          fontSize: widget.isDesktop ? 16 : 14,
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).textTheme.bodyMedium?.color,
+                          decoration: TextDecoration.underline,
+                          height: 1,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ],
         ),
