@@ -319,14 +319,7 @@ class HomePage extends ConsumerWidget {
               //       'A social media mobile app where users can create a story with each other. ',
               //   projectLink: 'https://github.com/ooluseye16/lorelink',
               // ),
-              ProjectCard(
-                isDesktop: isDesktop,
-                isTablet: isTablet,
-                projectName: 'Free Rant',
-                projectDescription:
-                    'A mobile app where users can post their thoughts anonymously and it expires after 24 hours. Follows the design pattern of Whatsapp Status.',
-                projectLink: 'https://github.com/ooluseye16/freerant',
-              ),
+
               ProjectCard(
                 isDesktop: isDesktop,
                 isTablet: isTablet,
@@ -346,6 +339,14 @@ class HomePage extends ConsumerWidget {
                   projectLink: 'https://github.com/ooluseye16/point_tracker',
                   appLink:
                       "https://drive.google.com/open?id=1-ZYFQgQ2DIFZLMeLOIn2CR79ltapxgze&usp=drive_fs"),
+              ProjectCard(
+                isDesktop: isDesktop,
+                isTablet: isTablet,
+                projectName: 'Free Rant',
+                projectDescription:
+                    'A mobile app where users can post their thoughts anonymously and it expires after 24 hours. Follows the design pattern of Whatsapp Status.\n\n ( Currently in Google Play Store Closed Testing )',
+                //   projectLink: 'https://github.com/ooluseye16/freerant',
+              ),
             ],
           ),
         ),
@@ -470,7 +471,7 @@ class ProjectCard extends StatefulWidget {
     required this.isTablet,
     required this.projectName,
     required this.projectDescription,
-    required this.projectLink,
+    this.projectLink,
     this.appLink,
   });
 
@@ -478,7 +479,7 @@ class ProjectCard extends StatefulWidget {
   final bool isTablet;
   final String projectName;
   final String projectDescription;
-  final String projectLink;
+  final String? projectLink;
   final String? appLink;
   @override
   State<ProjectCard> createState() => _ProjectCardState();
@@ -543,22 +544,23 @@ class _ProjectCardState extends State<ProjectCard> {
             const Spacer(),
             Row(
               children: [
-                Link(
-                  uri: Uri.parse(widget.projectLink),
-                  builder: (context, followLink) => InkWell(
-                    onTap: () {
-                      launchUrl(Uri.parse(widget.projectLink));
-                    },
-                    child: SvgPicture.asset(
-                      'github'.toSvg,
-                      height: widget.isDesktop ? 32 : 24,
-                      colorFilter: ColorFilter.mode(
-                        Theme.of(context).iconTheme.color!,
-                        BlendMode.srcIn,
+                if (widget.projectLink != null)
+                  Link(
+                    uri: Uri.parse(widget.projectLink!),
+                    builder: (context, followLink) => InkWell(
+                      onTap: () {
+                        launchUrl(Uri.parse(widget.projectLink!));
+                      },
+                      child: SvgPicture.asset(
+                        'github'.toSvg,
+                        height: widget.isDesktop ? 32 : 24,
+                        colorFilter: ColorFilter.mode(
+                          Theme.of(context).iconTheme.color!,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
                   ),
-                ),
                 16.width,
                 if (widget.appLink != null)
                   Link(
