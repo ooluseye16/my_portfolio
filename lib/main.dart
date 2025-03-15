@@ -31,8 +31,6 @@ class MyApp extends ConsumerWidget {
           primary: Colors.blue,
           secondary: Colors.blueAccent,
           surface: Colors.grey[900]!,
-          background: Colors.white,
-          onBackground: Colors.black,
         ),
         textTheme: const TextTheme(
           bodyLarge: TextStyle(color: Colors.black),
@@ -50,8 +48,6 @@ class MyApp extends ConsumerWidget {
           primary: Colors.blue,
           secondary: Colors.blueAccent,
           surface: Colors.grey[900]!,
-          background: Colors.black,
-          onBackground: Colors.white,
         ),
         textTheme: const TextTheme(
           bodyLarge: TextStyle(color: Colors.white),
@@ -60,6 +56,7 @@ class MyApp extends ConsumerWidget {
         iconTheme: const IconThemeData(color: Colors.white),
         dividerColor: Colors.white24,
       ),
+      
       home: const HomePage(),
     );
   }

@@ -338,7 +338,7 @@ class HomePage extends ConsumerWidget {
                       'A leaderboard mobile app where users can track their points. Uses Sqflite to store the data locally.',
                   projectLink: 'https://github.com/ooluseye16/point_tracker',
                   appLink:
-                      "https://drive.google.com/open?id=1-ZYFQgQ2DIFZLMeLOIn2CR79ltapxgze&usp=drive_fs"),
+                      "https://drive.google.com/open?id=11Bx1sy-kNL0WeaD2DixpWgBmDYhLskCH&usp=drive_fs"),
               ProjectCard(
                 isDesktop: isDesktop,
                 isTablet: isTablet,
